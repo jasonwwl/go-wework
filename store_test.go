@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jasonwwl/go-wework/wework"
+	"github.com/jasonwwl/go-wework"
 )
 
 func TestBuildKey(t *testing.T) {

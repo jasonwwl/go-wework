@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jasonwwl/go-wework/wework"
+	"github.com/jasonwwl/go-wework"
 )
 
 func TestFetchAccessToken(t *testing.T) {
@@ -14,6 +14,7 @@ func TestFetchAccessToken(t *testing.T) {
 	accessToken, err := client.FetchAccessToken(context.TODO())
 	duration := time.Since(startTime)
 	t.Logf("FetchAccessToken took %s to complete", duration)
+
 	if err != nil {
 		t.Errorf("FetchAccessToken returned an error: %v", err)
 	}

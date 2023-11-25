@@ -5,11 +5,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jasonwwl/go-wework/wework"
+	"github.com/jasonwwl/go-wework"
 )
 
 func LoadEnv() error {
-	file, err := os.Open("../.env")
+	file, err := os.Open(".env")
 	if err != nil {
 		return err
 	}

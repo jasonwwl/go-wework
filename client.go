@@ -53,7 +53,7 @@ func WithQuery(query netURL.Values) func(*requestOptions) {
 	}
 }
 
-func WithAccessToken(token *TokenDescriptor) func(*requestOptions) {
+func WithToken(token *TokenDescriptor) func(*requestOptions) {
 	return func(opts *requestOptions) {
 		opts.token = token
 	}
@@ -97,6 +97,7 @@ func (c *Client) NewRequest(ctx context.Context, method string, url string, sett
 		if err != nil {
 			return nil, err
 		}
+
 		bodyReader = bytes.NewReader(reqBytes)
 		header.Set("Content-Type", "application/json; charset=utf-8")
 	}
@@ -160,12 +161,18 @@ func decodeResponse(body io.Reader, v interface{}) error {
 		return err
 	}
 
-	if err := json.Unmarshal(bodyBytes, v); err != nil {
+	var apiResp APIResponse
+	err = json.Unmarshal(bodyBytes, &apiResp)
+	if err != nil {
 		return err
 	}
 
-	if apiResp, ok := v.(*APIResponse); ok && apiResp.ErrCode != 0 {
+	if apiResp.ErrCode != 0 {
 		return fmt.Errorf("api error: %d - %s", apiResp.ErrCode, apiResp.ErrMsg)
+	}
+
+	if err := json.Unmarshal(bodyBytes, v); err != nil {
+		return err
 	}
 
 	return nil

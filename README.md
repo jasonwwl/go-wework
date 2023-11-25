@@ -2,9 +2,9 @@
 
 This library provides unofficial Go clients for [WeWork API](https://developer.work.weixin.qq.com/document). We support:
 
-- InternalCorpAPI
-- OpenCorpAPI (SaaS)
-- Encrypt/Decrypt WeWork event messages
+- internal corp API
+- open corp API (SaaS)
+- encrypt/decrypt wework event messages
 
 ## Installation
 

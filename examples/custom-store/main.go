@@ -32,7 +32,7 @@ func main() {
 
 	client := wework.NewClient(clientCfg)
 
-	basicClient := basic.NewBasicClient(client)
+	basicClient := basic.NewWithClient(client)
 
 	resp, err := basicClient.UserIDToOpenUserID(context.Background(), []string{"jasonwwl"})
 	if err != nil {

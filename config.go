@@ -1,6 +1,7 @@
 package wework
 
 import (
+	"context"
 	"net/http"
 	"time"
 )
@@ -76,9 +77,13 @@ type StoreData struct {
 	Token           string
 }
 
-func (c *Client) InitStoreData(data []StoreData) error {
+func (c *Client) InitStoreData(data []StoreData, ctx context.Context) error {
+	if ctx == nil {
+		ctx = context.TODO()
+	}
+
 	for _, item := range data {
-		err := c.GetStore().SetToken(c, item.TokenDescriptor.TokenType, item.Token, 0)
+		err := c.GetStore().SetToken(c, ctx, item.TokenDescriptor.TokenType, item.Token, 0)
 		if err != nil {
 			return err
 		}

@@ -54,7 +54,7 @@ func (c *Client) FetchAccessTokenIfNeeded(ctx context.Context) (tk string, err e
 		return
 	}
 
-	tk, err = c.GetStore().GetToken(c, AccessToken.TokenType)
+	tk, err = c.GetStore().GetToken(c, ctx, AccessToken.TokenType)
 	if err == nil && tk != "" {
 		return
 	}
@@ -65,7 +65,7 @@ func (c *Client) FetchAccessTokenIfNeeded(ctx context.Context) (tk string, err e
 	}
 
 	tk = resp.AccessToken
-	err = c.GetStore().SetToken(c, AccessToken.TokenType, tk, resp.ExpiresIn)
+	err = c.GetStore().SetToken(c, ctx, AccessToken.TokenType, tk, resp.ExpiresIn)
 
 	return
 }
@@ -78,12 +78,12 @@ func (c *Client) FetchAuthCorpAccessTokenIfNeeded(ctx context.Context) (tk strin
 		return
 	}
 
-	tk, err = c.GetStore().GetToken(c, AuthCorpAccessToken.TokenType)
+	tk, err = c.GetStore().GetToken(c, ctx, AuthCorpAccessToken.TokenType)
 	if err == nil && tk != "" {
 		return
 	}
 
-	permanentCode, err := c.GetStore().GetToken(c, PermanentCode.TokenType)
+	permanentCode, err := c.GetStore().GetToken(c, ctx, PermanentCode.TokenType)
 	if err != nil {
 		return
 	}
@@ -94,7 +94,7 @@ func (c *Client) FetchAuthCorpAccessTokenIfNeeded(ctx context.Context) (tk strin
 	}
 
 	tk = resp.AccessToken
-	err = c.GetStore().SetToken(c, AuthCorpAccessToken.TokenType, tk, resp.ExpiresIn)
+	err = c.GetStore().SetToken(c, ctx, AuthCorpAccessToken.TokenType, tk, resp.ExpiresIn)
 
 	return
 }
@@ -108,7 +108,7 @@ func (c *Client) FetchProviderTokenIfNeeded(ctx context.Context) (tk string, err
 		return
 	}
 
-	tk, err = c.GetStore().GetToken(c, ProviderToken.TokenType)
+	tk, err = c.GetStore().GetToken(c, ctx, ProviderToken.TokenType)
 	if err == nil && tk != "" {
 		return
 	}
@@ -118,7 +118,7 @@ func (c *Client) FetchProviderTokenIfNeeded(ctx context.Context) (tk string, err
 		return
 	}
 
-	err = c.GetStore().SetToken(c, ProviderToken.TokenType, resp.ProviderAccessToken, resp.ExpiresIn)
+	err = c.GetStore().SetToken(c, ctx, ProviderToken.TokenType, resp.ProviderAccessToken, resp.ExpiresIn)
 	if err != nil {
 		return "", err
 	}
@@ -135,12 +135,12 @@ func (c *Client) FetchSuiteTokenIfNeeded(ctx context.Context) (tk string, err er
 		return
 	}
 
-	tk, err = c.GetStore().GetToken(c, SuiteTicket.TokenType)
+	tk, err = c.GetStore().GetToken(c, ctx, SuiteTicket.TokenType)
 	if err == nil && tk != "" {
 		return
 	}
 
-	ticket, err := c.GetStore().GetToken(c, SuiteTicket.TokenType)
+	ticket, err := c.GetStore().GetToken(c, ctx, SuiteTicket.TokenType)
 	if err != nil {
 		return
 	}
@@ -150,7 +150,7 @@ func (c *Client) FetchSuiteTokenIfNeeded(ctx context.Context) (tk string, err er
 		return
 	}
 
-	err = c.GetStore().SetToken(c, SuiteTicket.TokenType, resp.SuiteAccessToken, resp.ExpiresIn)
+	err = c.GetStore().SetToken(c, ctx, SuiteTicket.TokenType, resp.SuiteAccessToken, resp.ExpiresIn)
 	if err != nil {
 		return "", err
 	}

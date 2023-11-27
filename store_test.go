@@ -1,6 +1,7 @@
 package wework_test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 	"time"
@@ -12,7 +13,6 @@ func TestBuildKey(t *testing.T) {
 	client := newTestClient()
 	openCorpCfg := client.GetOpenCorpConfig()
 	internalCorpCfg := client.GetInternalCorpConfig()
-
 	tests := []struct {
 		tokenType wework.TokenType
 		want      string
@@ -58,14 +58,14 @@ func TestBuildKey(t *testing.T) {
 
 func TestSetToken(t *testing.T) {
 	store := wework.NewMemoryStore()
-
 	client := newTestClient()
+	ctx := context.TODO()
 
 	tokenType := wework.AccessToken.TokenType
 	token := "testToken"
 	expiresIn := int64(60)
 
-	err := store.SetToken(client, tokenType, token, expiresIn)
+	err := store.SetToken(client, ctx, tokenType, token, expiresIn)
 
 	if err != nil {
 		t.Errorf("SetToken returned an error: %v", err)
@@ -75,19 +75,20 @@ func TestSetToken(t *testing.T) {
 func TestGetToken(t *testing.T) {
 	store := wework.NewMemoryStore()
 	client := newTestClient()
+	ctx := context.TODO()
 
 	tokenType := wework.AccessToken.TokenType
 	token := "testToken"
 	expiresIn := int64(1) // 5 seconds
 
 	// 首先设置一个令牌
-	err := store.SetToken(client, tokenType, token, expiresIn)
+	err := store.SetToken(client, ctx, tokenType, token, expiresIn)
 	if err != nil {
 		t.Fatalf("SetToken returned an error: %v", err)
 	}
 
 	// 尝试获取同一个令牌
-	retrievedToken, err := store.GetToken(client, tokenType)
+	retrievedToken, err := store.GetToken(client, ctx, tokenType)
 	if err != nil {
 		t.Fatalf("GetToken returned an error: %v", err)
 	}
@@ -98,7 +99,7 @@ func TestGetToken(t *testing.T) {
 
 	// 测试过期的令牌
 	time.Sleep(time.Second * 1) // 等待超过令牌的过期时间
-	_, err = store.GetToken(client, tokenType)
+	_, err = store.GetToken(client, ctx, tokenType)
 	if err == nil {
 		t.Errorf("Expected an error for expired token, but got none")
 	}

@@ -1,14 +1,15 @@
 package wework
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
 )
 
 type Store interface {
-	GetToken(client *Client, tokenType TokenType) (string, error)
-	SetToken(client *Client, tokenType TokenType, token string, expiresIn int64) error
+	GetToken(client *Client, ctx context.Context, tokenType TokenType) (string, error)
+	SetToken(client *Client, ctx context.Context, tokenType TokenType, token string, expiresIn int64) error
 }
 
 type TokenInfo struct {
@@ -38,7 +39,7 @@ func InitMemoryStore() Store {
 	return instance
 }
 
-func (m *MemoryStore) GetToken(client *Client, tokenType TokenType) (string, error) {
+func (m *MemoryStore) GetToken(client *Client, ctx context.Context, tokenType TokenType) (string, error) {
 	key, err := BuildKey(client, tokenType)
 	if err != nil {
 		return "", err
@@ -62,7 +63,7 @@ func (m *MemoryStore) GetToken(client *Client, tokenType TokenType) (string, err
 
 }
 
-func (m *MemoryStore) SetToken(client *Client, tokenType TokenType, token string, expiresIn int64) error {
+func (m *MemoryStore) SetToken(client *Client, ctx context.Context, tokenType TokenType, token string, expiresIn int64) error {
 	key, err := BuildKey(client, tokenType)
 	if err != nil {
 		return err

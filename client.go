@@ -28,11 +28,6 @@ type requestOptions struct {
 	token *TokenDescriptor
 }
 
-type APIResponse struct {
-	ErrCode int    `json:"errcode"`
-	ErrMsg  string `json:"errmsg"`
-}
-
 type requestOption func(*requestOptions)
 
 func WithJSONData(data any) func(*requestOptions) {
@@ -146,13 +141,27 @@ func (c *Client) SendRequest(req *http.Request, v interface{}) error {
 	return nil
 }
 
+func (c *Client) Request(ctx context.Context, method string, url string, v interface{}, setters ...requestOption) error {
+	req, err := c.NewRequest(ctx, method, url, setters...)
+	if err != nil {
+		return err
+	}
+
+	err = c.SendRequest(req, &v)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func isFailureStatusCode(resp *http.Response) bool {
 	return resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusBadRequest
 }
 
 func decodeResponse(body io.Reader, v interface{}) error {
 	if v == nil {
-		v = &APIResponse{}
+		v = &APIBaseResponse{}
 	}
 
 	bodyBytes, err := io.ReadAll(body)
@@ -161,7 +170,7 @@ func decodeResponse(body io.Reader, v interface{}) error {
 		return err
 	}
 
-	var apiResp APIResponse
+	var apiResp APIBaseResponse
 	err = json.Unmarshal(bodyBytes, &apiResp)
 	if err != nil {
 		return err

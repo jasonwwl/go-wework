@@ -1,5 +1,8 @@
 # Go WeWork
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/jasonwwl/go-wework.svg)](https://pkg.go.dev/github.com/jasonwwl/go-wework)
+[![Go Report Card](https://goreportcard.com/badge/github.com/jasonwwl/go-wework)](https://goreportcard.com/report/github.com/jasonwwl/go-wework)
+
 This library provides unofficial Go clients for [WeWork API](https://developer.work.weixin.qq.com/document). We support:
 
 - internal corp API
@@ -86,12 +89,12 @@ package main
 type CustomRedisStore struct {
 }
 
-func (crs *CustomRedisStore) GetToken(c *wework.Client, tokenType wework.TokenType) (string, error) {
+func (crs *CustomRedisStore) GetToken(c *wework.Client, ctx context.Context, tokenType wework.TokenType) (string, error) {
     // redis get token
     return "token...", nil
 }
 
-func (crs *CustomRedisStore) SetToken(c *wework.Client, tokenType wework.TokenType, token string, expiresIn int64) (string, error) {
+func (crs *CustomRedisStore) SetToken(c *wework.Client, ctx context.Context, tokenType wework.TokenType, token string, expiresIn int64) (string, error) {
     // redis set token
     return nil
 }

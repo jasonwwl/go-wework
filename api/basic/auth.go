@@ -99,7 +99,7 @@ func (c *BasicClient) GetAuthInfo(ctx context.Context, authCorpid string, perman
 // 第三方服务商在取得企业的永久授权码后，通过此接口可以获取到企业的access_token。
 // 获取后可通过通讯录、应用、消息等企业接口来运营这些应用。
 //
-// > 此处获得的企业access_token与企业获取access_token拿到的token，本质上是一样的，只不过获取方式不同。获取之后，就跟普通企业一样使用token调用API接口
+//   - 此处获得的企业access_token与企业获取access_token拿到的token，本质上是一样的，只不过获取方式不同。获取之后，就跟普通企业一样使用token调用API接口
 //
 // 文档地址: https://developer.work.weixin.qq.com/document/path/90605
 func (c *BasicClient) GetCorpToken(ctx context.Context, authCorpid string, permanentCode string) (response GetCorpTokenResponse, err error) {
@@ -122,7 +122,7 @@ func (c *BasicClient) GetCorpToken(ctx context.Context, authCorpid string, perma
 // 第三方服务商可以用此接口获取授权企业中某个第三方应用的管理员列表(不包括外部管理员)，
 // 以便服务商在用户进入应用主页之后根据是否管理员身份做权限的区分。
 //
-// > 该应用必须与SUITE_ACCESS_TOKEN对应的suiteid对应，否则没权限查看
+//   - 该应用必须与SUITE_ACCESS_TOKEN对应的suiteid对应，否则没权限查看
 //
 // 文档地址: https://developer.work.weixin.qq.com/document/path/90606
 func (c *BasicClient) GetAdminList(ctx context.Context, authCorpid string, agentid int) (response GetAdminListResponse, err error) {

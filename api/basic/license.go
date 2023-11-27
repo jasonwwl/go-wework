@@ -6,6 +6,15 @@ import (
 	"github.com/jasonwwl/go-wework"
 )
 
+// 获取订单中的账号列表
+//
+// 查询指定订单下的平台能力服务账号列表。
+// 若为购买账号的订单或者存量企业的版本付费迁移订单，则返回账号激活码列表；
+// 若为续期账号的订单，则返回续期账号的成员列表。
+// 注意，若是购买账号的订单，则仅订单支付完成时，系统才会生成账号，故支付完成之前，该接口不会返回账号激活码。
+//   - 如果是多企业订单，请先调用获取多企业订单详情获取到每个企业的子订单id (sub_order_id)，然后使用 sub_order_id 来调用此接口。
+//
+// 文档地址: https://developer.work.weixin.qq.com/document/path/95649
 func (c *BasicClient) ListOrderAccount(ctx context.Context, request ListOrderAccountRequest) (response ListOrderAccountResponse, err error) {
 
 	err = c.client.Request(

@@ -11,7 +11,7 @@ import (
 func TestFetchAccessToken(t *testing.T) {
 	client := newTestClient()
 	startTime := time.Now()
-	accessToken, err := client.FetchAccessToken(context.TODO())
+	accessToken, err := client.FetchAccessTokenIfNeeded(context.TODO())
 	duration := time.Since(startTime)
 	t.Logf("FetchAccessToken took %s to complete", duration)
 
@@ -45,7 +45,7 @@ func TestFetchSuiteToken(t *testing.T) {
 		},
 	})
 
-	suiteToken, err := client.FetchSuiteToken(context.TODO())
+	suiteToken, err := client.FetchSuiteTokenIfNeeded(context.TODO())
 	if err != nil {
 		t.Errorf("FetchSuiteToken returned an error: %v", err)
 	}

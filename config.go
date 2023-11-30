@@ -90,3 +90,7 @@ func (c *Client) InitStoreData(data []StoreData, ctx context.Context) error {
 	}
 	return nil
 }
+
+func (c *Client) SetAuthCorpID(authCorpID string) {
+	c.GetOpenCorpConfig().AuthCorpID = authCorpID
+}

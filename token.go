@@ -66,7 +66,7 @@ func (c *Client) FetchAccessTokenIfNeeded(ctx context.Context) (tk string, err e
 	}
 
 	tk = resp.AccessToken
-	err = c.GetStore().SetToken(c, ctx, AccessToken.TokenType, tk, time.Duration(resp.ExpiresIn)*time.Second)
+	err = c.SetAccessToken(ctx, tk, time.Duration(resp.ExpiresIn)*time.Second)
 
 	return
 }
@@ -95,7 +95,7 @@ func (c *Client) FetchAuthCorpAccessTokenIfNeeded(ctx context.Context) (tk strin
 	}
 
 	tk = resp.AccessToken
-	err = c.GetStore().SetToken(c, ctx, AuthCorpAccessToken.TokenType, tk, time.Duration(resp.ExpiresIn)*time.Second)
+	err = c.SetAuthCorpAccessToken(ctx, tk, time.Duration(resp.ExpiresIn)*time.Second)
 
 	return
 }
@@ -119,7 +119,7 @@ func (c *Client) FetchProviderTokenIfNeeded(ctx context.Context) (tk string, err
 		return
 	}
 
-	err = c.GetStore().SetToken(c, ctx, ProviderToken.TokenType, resp.ProviderAccessToken, time.Duration(resp.ExpiresIn)*time.Second)
+	err = c.SetProviderAccessToken(ctx, resp.ProviderAccessToken, time.Duration(resp.ExpiresIn)*time.Second)
 	if err != nil {
 		return "", err
 	}
@@ -151,7 +151,7 @@ func (c *Client) FetchSuiteTokenIfNeeded(ctx context.Context) (tk string, err er
 		return
 	}
 
-	err = c.GetStore().SetToken(c, ctx, SuiteToken.TokenType, resp.SuiteAccessToken, time.Duration(resp.ExpiresIn)*time.Second)
+	err = c.SetSuiteToken(ctx, resp.SuiteAccessToken, time.Duration(resp.ExpiresIn)*time.Second)
 	if err != nil {
 		return "", err
 	}
@@ -245,5 +245,107 @@ func (c *Client) GetSuiteToken(ctx context.Context, suiteId, suiteSecret, suiteT
 			"suite_ticket": suiteTicket,
 		}),
 	)
+	return
+}
+
+func (c *Client) SetPermanentCode(ctx context.Context, permanentCode string) (err error) {
+	cfg := c.GetOpenCorpConfig()
+
+	if cfg == nil {
+		err = fmt.Errorf("invalid config: open corp config is nil")
+		return
+	}
+
+	if cfg.AuthCorpID == "" {
+		err = fmt.Errorf("invalid config: open corp config's AuthCorpID is empty")
+		return
+	}
+
+	err = c.GetStore().SetToken(c, ctx, PermanentCode.TokenType, permanentCode, 0)
+	return
+}
+
+func (c *Client) SetAuthCorpAccessToken(ctx context.Context, authCorpAccessToken string, expiresIn time.Duration) (err error) {
+	cfg := c.GetOpenCorpConfig()
+
+	if cfg == nil {
+		err = fmt.Errorf("invalid config: open corp config is nil")
+		return
+	}
+
+	if cfg.AuthCorpID == "" {
+		err = fmt.Errorf("invalid config: open corp config's AuthCorpID is empty")
+		return
+	}
+
+	err = c.GetStore().SetToken(c, ctx, AuthCorpAccessToken.TokenType, authCorpAccessToken, expiresIn)
+	return
+}
+
+func (c *Client) SetSuiteTicket(ctx context.Context, suiteTicket string) (err error) {
+	cfg := c.GetOpenCorpConfig()
+
+	if cfg == nil {
+		err = fmt.Errorf("invalid config: open corp config is nil")
+		return
+	}
+
+	if cfg.SuiteID == "" {
+		err = fmt.Errorf("invalid config: open corp config's SuiteID is empty")
+		return
+	}
+
+	err = c.GetStore().SetToken(c, ctx, SuiteTicket.TokenType, suiteTicket, 0)
+	return
+}
+
+func (c *Client) SetSuiteToken(ctx context.Context, suiteAccessToken string, expiresIn time.Duration) (err error) {
+	cfg := c.GetOpenCorpConfig()
+
+	if cfg == nil {
+		err = fmt.Errorf("invalid config: open corp config is nil")
+		return
+	}
+
+	if cfg.SuiteID == "" {
+		err = fmt.Errorf("invalid config: open corp config's SuiteID is empty")
+		return
+	}
+
+	err = c.GetStore().SetToken(c, ctx, SuiteToken.TokenType, suiteAccessToken, expiresIn)
+	return
+}
+
+func (c *Client) SetProviderAccessToken(ctx context.Context, providerAccessToken string, expiresIn time.Duration) (err error) {
+	cfg := c.GetOpenCorpConfig()
+
+	if cfg == nil {
+		err = fmt.Errorf("invalid config: open corp config is nil")
+		return
+	}
+
+	if cfg.ProviderCorpID == "" {
+		err = fmt.Errorf("invalid config: open corp config's ProviderCorpID is empty")
+		return
+	}
+
+	err = c.GetStore().SetToken(c, ctx, ProviderToken.TokenType, providerAccessToken, expiresIn)
+	return
+}
+
+func (c *Client) SetAccessToken(ctx context.Context, accessToken string, expiresIn time.Duration) (err error) {
+	cfg := c.GetInternalCorpConfig()
+
+	if cfg == nil {
+		err = fmt.Errorf("invalid config: internal corp config is nil")
+		return
+	}
+
+	if cfg.CorpID == "" {
+		err = fmt.Errorf("invalid config: internal corp config's CorpID is empty")
+		return
+	}
+
+	err = c.GetStore().SetToken(c, ctx, AccessToken.TokenType, accessToken, expiresIn)
 	return
 }

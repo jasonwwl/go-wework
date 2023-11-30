@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"time"
 )
 
 // GetToken 获取指定类型的 Token
@@ -65,7 +66,7 @@ func (c *Client) FetchAccessTokenIfNeeded(ctx context.Context) (tk string, err e
 	}
 
 	tk = resp.AccessToken
-	err = c.GetStore().SetToken(c, ctx, AccessToken.TokenType, tk, resp.ExpiresIn)
+	err = c.GetStore().SetToken(c, ctx, AccessToken.TokenType, tk, time.Duration(resp.ExpiresIn)*time.Second)
 
 	return
 }
@@ -94,7 +95,7 @@ func (c *Client) FetchAuthCorpAccessTokenIfNeeded(ctx context.Context) (tk strin
 	}
 
 	tk = resp.AccessToken
-	err = c.GetStore().SetToken(c, ctx, AuthCorpAccessToken.TokenType, tk, resp.ExpiresIn)
+	err = c.GetStore().SetToken(c, ctx, AuthCorpAccessToken.TokenType, tk, time.Duration(resp.ExpiresIn)*time.Second)
 
 	return
 }
@@ -118,7 +119,7 @@ func (c *Client) FetchProviderTokenIfNeeded(ctx context.Context) (tk string, err
 		return
 	}
 
-	err = c.GetStore().SetToken(c, ctx, ProviderToken.TokenType, resp.ProviderAccessToken, resp.ExpiresIn)
+	err = c.GetStore().SetToken(c, ctx, ProviderToken.TokenType, resp.ProviderAccessToken, time.Duration(resp.ExpiresIn)*time.Second)
 	if err != nil {
 		return "", err
 	}
@@ -135,7 +136,7 @@ func (c *Client) FetchSuiteTokenIfNeeded(ctx context.Context) (tk string, err er
 		return
 	}
 
-	tk, err = c.GetStore().GetToken(c, ctx, SuiteTicket.TokenType)
+	tk, err = c.GetStore().GetToken(c, ctx, SuiteToken.TokenType)
 	if err == nil && tk != "" {
 		return
 	}
@@ -150,7 +151,7 @@ func (c *Client) FetchSuiteTokenIfNeeded(ctx context.Context) (tk string, err er
 		return
 	}
 
-	err = c.GetStore().SetToken(c, ctx, SuiteTicket.TokenType, resp.SuiteAccessToken, resp.ExpiresIn)
+	err = c.GetStore().SetToken(c, ctx, SuiteToken.TokenType, resp.SuiteAccessToken, time.Duration(resp.ExpiresIn)*time.Second)
 	if err != nil {
 		return "", err
 	}

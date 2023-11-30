@@ -63,7 +63,7 @@ func TestSetToken(t *testing.T) {
 
 	tokenType := wework.AccessToken.TokenType
 	token := "testToken"
-	expiresIn := int64(60)
+	expiresIn := time.Second * 5
 
 	err := store.SetToken(client, ctx, tokenType, token, expiresIn)
 
@@ -79,7 +79,7 @@ func TestGetToken(t *testing.T) {
 
 	tokenType := wework.AccessToken.TokenType
 	token := "testToken"
-	expiresIn := int64(1) // 5 seconds
+	expiresIn := time.Second * 1 // 5 seconds
 
 	// 首先设置一个令牌
 	err := store.SetToken(client, ctx, tokenType, token, expiresIn)

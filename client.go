@@ -110,7 +110,7 @@ func (c *Client) NewRequest(ctx context.Context, method string, url string, sett
 		url = url + "?" + opts.query.Encode()
 	}
 	url = c.config.Options.BaseURL + url
-
+	fmt.Println(url)
 	req, err = http.NewRequestWithContext(ctx, method, url, bodyReader)
 	if err != nil {
 		return nil, err

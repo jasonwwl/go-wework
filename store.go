@@ -9,12 +9,12 @@ import (
 
 type Store interface {
 	GetToken(client *Client, ctx context.Context, tokenType TokenType) (string, error)
-	SetToken(client *Client, ctx context.Context, tokenType TokenType, token string, expiresIn int64) error
+	SetToken(client *Client, ctx context.Context, tokenType TokenType, token string, expiresIn time.Duration) error
 }
 
 type TokenInfo struct {
 	token     string
-	expiresAt int64
+	expiresAt time.Time
 }
 
 type MemoryStore struct {
@@ -55,7 +55,7 @@ func (m *MemoryStore) GetToken(client *Client, ctx context.Context, tokenType To
 		return "", fmt.Errorf("invalid token info type")
 	}
 
-	if tokenInfo.expiresAt > 0 && tokenInfo.expiresAt <= time.Now().Unix() {
+	if !tokenInfo.expiresAt.IsZero() && tokenInfo.expiresAt.Before(time.Now()) {
 		return "", ErrNilStoreToken
 	}
 
@@ -63,7 +63,7 @@ func (m *MemoryStore) GetToken(client *Client, ctx context.Context, tokenType To
 
 }
 
-func (m *MemoryStore) SetToken(client *Client, ctx context.Context, tokenType TokenType, token string, expiresIn int64) error {
+func (m *MemoryStore) SetToken(client *Client, ctx context.Context, tokenType TokenType, token string, expiresIn time.Duration) error {
 	key, err := BuildKey(client, tokenType)
 	if err != nil {
 		return err
@@ -73,10 +73,14 @@ func (m *MemoryStore) SetToken(client *Client, ctx context.Context, tokenType To
 	return nil
 }
 
-func MakeTokenInfo(token string, expiresIn int64) *TokenInfo {
-	expiresAt := time.Now().Unix() + expiresIn
-	if expiresIn <= 0 {
-		expiresAt = 0
+func MakeTokenInfo(token string, expiresIn time.Duration) *TokenInfo {
+	// 如果exipresIn为0，则表示永久有效
+
+	var expiresAt time.Time
+	if expiresIn > 0 {
+		expiresAt = time.Now().Add(expiresIn)
+	} else {
+		expiresAt = time.Time{}
 	}
 
 	return &TokenInfo{token: token, expiresAt: expiresAt}
@@ -86,14 +90,19 @@ func BuildKey(client *Client, tokenType TokenType) (string, error) {
 	var id string
 
 	switch tokenType {
+
 	case ProviderToken.TokenType:
 		id = client.config.OpenCorp.ProviderCorpID
+
 	case SuiteToken.TokenType, SuiteTicket.TokenType:
 		id = client.config.OpenCorp.SuiteID
+
 	case AccessToken.TokenType:
 		id = client.config.InternalCorp.CorpID
+
 	case AuthCorpAccessToken.TokenType, PermanentCode.TokenType:
-		id = client.config.OpenCorp.AuthCorpID
+		id = client.config.OpenCorp.SuiteID + ":" + client.config.OpenCorp.AuthCorpID
+
 	default:
 		return "", fmt.Errorf("invalid token type: %s", tokenType)
 	}

@@ -6,25 +6,6 @@ import (
 	"github.com/jasonwwl/go-wework"
 )
 
-// 获取第三方应用凭证
-//
-// 该API用于获取第三方应用凭证（suite_access_token）。
-//
-// 文档地址: https://developer.work.weixin.qq.com/document/path/90600
-//   - 由于第三方服务商可能托管了大量的企业，其安全问题造成的影响会更加严重，故API中除了合法来源IP校验之外，还额外增加了suite_ticket作为安全凭证。
-//   - 获取suite_access_token时，需要suite_ticket参数。suite_ticket由企业微信后台定时推送给“指令回调URL”，每十分钟更新一次，见[推送suite_ticket]。
-//   - suite_ticket实际有效期为30分钟，可以容错连续两次获取suite_ticket失败的情况，但是请永远使用最新接收到的suite_ticket。通过本接口获取的suite_access_token有效期为2小时，开发者需要进行缓存，不可频繁获取。
-//
-// [推送suite_ticket]: https://developer.work.weixin.qq.com/document/path/90628
-func (c *BasicClient) GetSuiteToken(ctx context.Context, ticket string) (response SuiteTokenResponse, err error) {
-	err = c.client.Request(ctx, "POST", "/service/get_suite_token", &response, wework.WithJSONData(&SuiteTokenRequest{
-		SuiteID:     c.client.GetOpenCorpConfig().SuiteID,
-		SuiteSecret: c.client.GetOpenCorpConfig().SuiteSecret,
-		SuiteTicket: ticket,
-	}))
-	return
-}
-
 // 获取预授权码
 //
 // 该API用于获取预授权码。预授权码用于企业授权时的第三方服务商安全验证。
@@ -79,34 +60,11 @@ func (c *BasicClient) GetPermanentCode(ctx context.Context, authCode string) (re
 // 永久code的获取，是通过临时授权码使用get_permanent_code接口获取到的permanent_code。
 //
 // 文档地址: https://developer.work.weixin.qq.com/document/path/90604
-func (c *BasicClient) GetAuthInfo(ctx context.Context, authCorpid string, permanentCode string) (response GetPermanentCodeResponse, err error) {
+func (c *BasicClient) GetAuthInfo(ctx context.Context, authCorpid string, permanentCode string) (response GetAuthInfoResponse, err error) {
 	err = c.client.Request(
 		ctx,
 		"POST",
 		"/service/get_auth_info",
-		&response,
-		wework.WithToken(wework.SuiteToken),
-		wework.WithJSONData(wework.H{
-			"auth_corpid":    authCorpid,
-			"permanent_code": permanentCode,
-		}),
-	)
-	return
-}
-
-// 获取企业凭证
-//
-// 第三方服务商在取得企业的永久授权码后，通过此接口可以获取到企业的access_token。
-// 获取后可通过通讯录、应用、消息等企业接口来运营这些应用。
-//
-//   - 此处获得的企业access_token与企业获取access_token拿到的token，本质上是一样的，只不过获取方式不同。获取之后，就跟普通企业一样使用token调用API接口
-//
-// 文档地址: https://developer.work.weixin.qq.com/document/path/90605
-func (c *BasicClient) GetCorpToken(ctx context.Context, authCorpid string, permanentCode string) (response GetCorpTokenResponse, err error) {
-	err = c.client.Request(
-		ctx,
-		"POST",
-		"/service/get_corp_token",
 		&response,
 		wework.WithToken(wework.SuiteToken),
 		wework.WithJSONData(wework.H{

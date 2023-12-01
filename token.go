@@ -162,6 +162,8 @@ func (c *Client) FetchSuiteTokenIfNeeded(ctx context.Context) (tk string, err er
 
 // 获取服务商凭证
 //
+// IMPORTANT: 此方法不会缓存获取到的凭证，需要自行缓存！建议使用GetToken或FetchProviderTokenIfNeeded方法进行获取
+//
 // 该API用于获取服务商凭证，该凭证用于服务商调用企业微信开放接口。
 //
 // 文档地址: https://developer.work.weixin.qq.com/document/path/91200
@@ -180,6 +182,8 @@ func (c *Client) GetProviderToken(ctx context.Context, corpid string, providerSe
 }
 
 // 内部应用获取access_token
+//
+// IMPORTANT: 此方法不会缓存获取到的凭证，需要自行缓存！建议使用GetToken或FetchAccessTokenIfNeeded方法进行获取
 //
 // 获取access_token是调用企业微信API接口的第一步，相当于创建了一个登录凭证，其它的业务API接口，都需要依赖于access_token来鉴权调用者身份。
 // 因此开发者，在使用业务接口前，要明确access_token的颁发来源，使用正确的access_token。
@@ -200,6 +204,8 @@ func (c *Client) GetAccessToken(ctx context.Context, corpid string, corpSecret s
 }
 
 // 第三方服务商获取授权企业的access_token
+//
+// IMPORTANT: 此方法不会缓存获取到的凭证，需要自行缓存！建议使用GetToken或FetchAuthCorpAccessTokenIfNeeded方法进行获取
 //
 // 第三方服务商在取得企业的永久授权码后，通过此接口可以获取到企业的access_token。
 // 获取后可通过通讯录、应用、消息等企业接口来运营这些应用。
@@ -224,6 +230,8 @@ func (c *Client) GetAuthCorpAccessToken(ctx context.Context, authCorpid, permane
 }
 
 // 获取第三方应用凭证
+//
+// IMPORTANT: 此方法不会缓存获取到的凭证，需要自行缓存！建议使用GetToken或FetchSuiteTokenIfNeeded方法进行获取
 //
 // 该API用于获取第三方应用凭证（suite_access_token）。
 //

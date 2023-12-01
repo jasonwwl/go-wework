@@ -36,6 +36,7 @@ type GetPermanentCodeResponse struct {
 	AuthUserInfo     AuthUserInfo     `json:"auth_user_info"`
 	RegisterCodeInfo RegisterCodeInfo `json:"register_code_info"`
 	State            string           `json:"state"`
+	EditionInfo      *EditionInfo     `json:"edition_info"`
 }
 
 type GetAuthInfoResponse struct {
@@ -43,6 +44,7 @@ type GetAuthInfoResponse struct {
 	DealerCorpInfo DealerCorpInfo `json:"dealer_corp_info"`
 	AuthCorpInfo   AuthCorpInfo   `json:"auth_corp_info"`
 	AuthInfo       AuthInfo       `json:"auth_info"`
+	EditionInfo    *EditionInfo   `json:"edition_info"`
 }
 
 type GetCorpTokenResponse struct {
@@ -143,4 +145,19 @@ type RegisterCodeInfo struct {
 	RegisterCode string `json:"register_code"`
 	TemplateID   string `json:"template_id"`
 	State        string `json:"state"`
+}
+
+type EditionInfo struct {
+	Agent []EditionInfoItem `json:"agent"`
+}
+
+type EditionInfoItem struct {
+	AgentID               int    `json:"agentid"`
+	EditionID             string `json:"edition_id"`
+	EditionName           string `json:"edition_name"`
+	AppStatus             int    `json:"app_status"`
+	UserLimit             int    `json:"user_limit"`
+	ExpiredTime           int64  `json:"expired_time"`
+	IsVirtualVersion      bool   `json:"is_virtual_version"`
+	IsSharedFromOtherCorp bool   `json:"is_shared_from_other_corp"`
 }

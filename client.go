@@ -106,11 +106,16 @@ func (c *Client) NewRequest(ctx context.Context, method string, url string, sett
 		opts.query.Add(opts.token.ParamValue, tk)
 	}
 
+	if c.config.DebugMode {
+		fmt.Printf("[go-wework] [%s]%s, data: %+v\n", method, url, opts.json)
+		opts.query.Add("debug", "1")
+	}
+
 	if len(opts.query) > 0 {
 		url = url + "?" + opts.query.Encode()
 	}
 	url = c.config.Options.BaseURL + url
-	fmt.Println(url)
+
 	req, err = http.NewRequestWithContext(ctx, method, url, bodyReader)
 	if err != nil {
 		return nil, err

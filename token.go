@@ -33,6 +33,16 @@ func (c *Client) GetToken(ctx context.Context, token *TokenDescriptor) (tk strin
 		}
 	}
 
+	if tokenType == PermanentCode.TokenType || tokenType == SuiteTicket.TokenType {
+		if openCorpCfg == nil {
+			return "", fmt.Errorf("invalid config: open corp config is nil")
+		}
+
+		if openCorpCfg.SuiteID == "" {
+			return "", fmt.Errorf("invalid config: open corp config's SuiteID is empty")
+		}
+	}
+
 	switch tokenType {
 	case AccessToken.TokenType:
 		return c.FetchAccessTokenIfNeeded(ctx)
@@ -42,6 +52,8 @@ func (c *Client) GetToken(ctx context.Context, token *TokenDescriptor) (tk strin
 		return c.FetchProviderTokenIfNeeded(ctx)
 	case SuiteToken.TokenType:
 		return c.FetchSuiteTokenIfNeeded(ctx)
+	case PermanentCode.TokenType:
+		return c.GetStore().GetToken(c, ctx, PermanentCode.TokenType)
 	default:
 		return "", fmt.Errorf("invalid token type: %s", token.TokenType)
 	}

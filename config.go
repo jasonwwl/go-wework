@@ -32,6 +32,7 @@ type ClientConfig struct {
 	InternalCorp *InternalCorp
 	OpenCorp     *OpenCorp
 	HTTPClient   *http.Client
+	DebugMode    bool
 }
 
 type InternalCorp struct {

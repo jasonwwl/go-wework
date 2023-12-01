@@ -50,6 +50,11 @@ func (b *configBuilder) InternalCorp(internalCorpCfg InternalCorp) *configBuilde
 	return b
 }
 
+func (b *configBuilder) DebugMode(debugMode bool) *configBuilder {
+	b.config.DebugMode = debugMode
+	return b
+}
+
 func (b *configBuilder) Build() (*ClientConfig, error) {
 	if b.config.Options.TokenStore == nil {
 		b.config.Options.TokenStore = InitMemoryStore()
